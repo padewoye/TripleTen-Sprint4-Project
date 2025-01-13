@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 
-# Project Section #1:
+# Project Section #1:  Data Viewer
 #     1)  Load/Read the dataset from the given csv file
 #     2)  Add Data Viewer for dataset display
 #     3)  Re-order the dataframe columns for better User Viewing experience 
@@ -14,7 +14,7 @@ import plotly.express as px
 
 df = pd.read_csv('datasets/vehicles_us.csv')
 
-st.header('Car Sale Advertisement Data Viewer')
+st.header('Data Viewer - Car Sale Advertisements')
 
 df = df[['model', 'model_year', 'price', 'date_posted', 'days_listed', 'odometer', 'transmission', 'fuel', 'condition', 'cylinders', 'type', 'paint_color', 'is_4wd']]
 df['model'] = df['model'].str.title()
@@ -34,4 +34,31 @@ if select_all:
 else:
     df_filter_model = df[df['model'] == model_dropbox]
     df_filter_model
+
+# Project Section #2:  Histograms to view data from different perspectives
+#     1)  Add Histogram of Vehicle Model Count by Type
+#     2)  Add Histogram of Model Year Count by Vehicle Condition
+#     3)  Add Histogram of Model Year Count by Paint Color
+
+st.header('Hist A - Vehicle Model Count by Type')
+st.write("""
+###### Select/Unselect the (multiple or single) Type to FILTER the Data View
+""" )
+fig = px.histogram(df, x='model', color='type')
+st.write(fig)
+
+st.header('Hist B - Model Year Count by Vehicle Condition')
+st.write("""
+###### Select/Unselect the (multiple or single) Condition to FILTER the Data View
+""" )
+fig = px.histogram(df, x='model_year', color='condition')
+st.write(fig)
+
+st.header('Hist C - Model Year Count by Paint Color')
+st.write("""
+###### Select/Unselect the (multiple or single) Paint Color to FILTER the Data View
+""" )
+fig = px.histogram(df, x='model_year', color='paint_color')
+st.write(fig)
+
 
