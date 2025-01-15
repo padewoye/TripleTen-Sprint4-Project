@@ -6,10 +6,12 @@ import plotly.express as px
 #     1)  Load/Read the dataset from the given csv file
 #     2)  Re-order the dataframe columns for better User Viewing experience 
 #     3)  Cleanup the MODEL column data by capitalizing, replacing names to popular conventions (e.g. Bmw = BMW)
-#     4)  Sort the data by MODEL column
-#     5)  Add a Select All checkbox to display all MODELS
-#     6)  Add a selector dropdown box to filter by MODEL
-#     7)  Add Data Viewer for dataset display
+#     4)  Check data for duplicates
+#     5)  Fill in the missing values using "median()", "Unknown", and "0" for values (model_year, cylinders, odometer, paint_color, is_4wd)
+#     6)  Sort the data by MODEL column
+#     7)  Add a Select All checkbox to display all MODELS
+#     8)  Add a selector dropdown box to filter by MODEL
+#     9)  Add Data Viewer for dataset display
 # 
 
 # 1-1
@@ -25,17 +27,28 @@ substitutes = {'Bmw X5': 'BMW X5', 'Gmc Sierra 1500': 'GMC Sierra 1500', 'Honda 
 df['model'] = df['model'].replace(substitutes)
 
 # 1-4
+df.duplicated().sum()
+
+# 1-5
+df['model_year'] = df['model_year'].fillna(df['model_year'].median())
+df['cylinders'] = df.groupby('model')['cylinders'].fillna(df['cylinders'].median())
+df['odometer'] = df.groupby('model')['odometer'].fillna(df['odometer'].median())
+df['paint_color'] = df['paint_color'].fillna('Unknown')
+df['is_4wd'] = df['is_4wd'].fillna(0)
+
+
+# 1-6
 df.sort_values(by='model', ascending=True, inplace=True)
 df = df.reset_index(drop=True)
 
-# 1-5
+# 1-7
 select_all = st.checkbox('Select All:')
 
-# 1-6
+# 1-8
 model_selector = df['model'].unique()
 model_dropbox = st.selectbox('Select a Model to Filter: ', model_selector)
 
-# 1-7
+# 1-9
 if select_all:
     df_filter_model = df
     df_filter_model
